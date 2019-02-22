@@ -18,16 +18,25 @@ default_platform(:android)
 platform :android do
   desc "Runs all the tests"
   lane :test do
+    # Run Java tests
+    # https://docs.fastlane.tools/getting-started/android/running-tests/
     gradle(task: "test")
   end
 
-  desc "Submit a new Beta Build to Crashlytics Beta"
-  lane :beta do
+  desc "Build the app"
+  lane :build do
+    # Build the app
+    # https://docs.fastlane.tools/getting-started/android/beta-deployment/#building-your-app
+    # It`s necessary to update the app to sign automaticaly
+    # https://developer.android.com/studio/publish/app-signing#sign-auto
     gradle(task: "clean assembleRelease")
-    crashlytics
-  
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
+    # Moving the result bin to root
+    sh 'mv $(find ../app/build -name *.apk) ../app.apk'
+  end
+
+  desc "Upload to Crashlytics"
+  lane :fabric do
+    crashlytics(apk_path:'app.apk')
   end
 
   desc "Deploy a new version to the Google Play"
