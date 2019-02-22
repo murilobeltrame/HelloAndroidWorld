@@ -36,12 +36,20 @@ platform :android do
 
   desc "Upload to Crashlytics"
   lane :fabric do
+    # Upload app to Fabric Beta (Crashlytics)
+    # https://docs.fastlane.tools/getting-started/android/beta-deployment/#supported-beta-testing-services
+    # Should be configured with Fabric and Crashlytics libs
+    # Install instructions at
+    # https://fabric.io/kits/android/crashlytics/install
     crashlytics(apk_path:'app.apk')
   end
 
   desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+  lane :beta do
+    # Before upload to PlayStore it`s necessary to configure an Application on Play Store portal and run
+    # `fastlane supply init` to create all assets.
+    # Before upload to PlayStore it`s necessary to create a service account.
+    # https://docs.fastlane.tools/actions/upload_to_play_store/
+    upload_to_play_store(track: 'beta')
   end
 end
